@@ -1,0 +1,38 @@
+<div class="page">
+  <header>
+    <span>{{ auth.getNombre() }} ({{ auth.getRol() }})</span>
+    <nav>
+      <button (click)="ir('/inventario')">Inventario</button>
+      <button (click)="ir('/traslados')">Traslados</button>
+      <button class="logout" (click)="logout()">Salir</button>
+    </nav>
+  </header>
+
+  <h2>{{ auth.isAdmin() ? 'Solicitudes Pendientes' : 'Mis Solicitudes' }}</h2>
+
+  <div *ngIf="mensaje" class="ok">{{ mensaje }}</div>
+  <div *ngIf="error"   class="err">{{ error }}</div>
+
+  <div *ngIf="!solicitudes.length" class="vacio">No hay solicitudes.</div>
+
+  <div *ngFor="let s of solicitudes" class="card">
+    <div class="card-head">
+      <strong>#{{ s.solicitudId }}</strong>
+      <span [class]="'badge ' + s.estado.toLowerCase()">{{ s.estado }}</span>
+      <span>{{ s.fechaSolicitud | date:'dd/MM/yyyy HH:mm' }}</span>
+    </div>
+    <div class="card-body">
+      <span>{{ s.origen?.nombre }} → {{ s.destino?.nombre }}</span>
+      <span>Solicitante: {{ s.usuarioSolicitante }}</span>
+    </div>
+    <ul>
+      <li *ngFor="let d of s.detalles">
+        {{ d.producto?.nombre }} — <strong>{{ d.cantidad }}</strong>
+      </li>
+    </ul>
+    <div *ngIf="auth.isAdmin() && s.estado === 'PENDIENTE'" class="acciones">
+      <button class="btn-ok"  (click)="aprobar(s.solicitudId)">Aprobar</button>
+      <button class="btn-no"  (click)="rechazar(s.solicitudId)">Rechazar</button>
+    </div>
+  </div>
+</div>

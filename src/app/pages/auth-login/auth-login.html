@@ -1,0 +1,14 @@
+<div class="login-wrap">
+  <div class="card">
+    <h2>InkaProductos ERP</h2>
+    <p class="sub">Control de inventario</p>
+    @if (error) {
+      <div class="err">{{ error }}</div>
+    }
+    <input [(ngModel)]="email"    placeholder="Correo"     type="email">
+    <input [(ngModel)]="password" placeholder="Contraseña" type="password">
+    <button (click)="login()" [disabled]="loading">
+      {{ loading ? 'Ingresando...' : 'Ingresar' }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,58 @@
+<div class="page">
+  <header>
+    <span>{{ auth.getNombre() }} ({{ auth.getRol() }})</span>
+    <nav>
+      <button (click)="ir('/inventario')">Inventario</button>
+      <button (click)="ir('/solicitudes')">Solicitudes</button>
+      <button class="logout" (click)="logout()">Salir</button>
+    </nav>
+  </header>
+
+  <h2>{{ auth.isAdmin() ? 'Traslado de Stock' : 'Solicitar Traslado' }}</h2>
+
+  <div *ngIf="mensaje" class="ok">{{ mensaje }}</div>
+  <div *ngIf="error"   class="err">{{ error }}</div>
+
+  <div class="row">
+    <label>Origen</label>
+    <select [(ngModel)]="origenId" (change)="cargarProductos()">
+      <option value="0">-- Seleccionar --</option>
+      <option *ngFor="let a of almacenes" [value]="a.almacenId">{{ a.nombre }}</option>
+    </select>
+    <label>Destino</label>
+    <select [(ngModel)]="destinoId">
+      <option value="0">-- Seleccionar --</option>
+      <option *ngFor="let a of almacenes" [value]="a.almacenId">{{ a.nombre }}</option>
+    </select>
+  </div>
+
+  <div class="row">
+    <input [(ngModel)]="referencia"  placeholder="Referencia (opcional)">
+    <input [(ngModel)]="observacion" placeholder="Observación (opcional)">
+  </div>
+
+  <table *ngIf="productos.length">
+    <thead><tr><th>SKU</th><th>Producto</th><th>Stock</th><th>Cantidad</th><th></th></tr></thead>
+    <tbody>
+      <tr *ngFor="let p of productos">
+        <td>{{ p.sku }}</td>
+        <td>{{ p.nombre }}</td>
+        <td>{{ p.stockAlmacen ?? p.stockTotal }}</td>
+        <td><input type="number" [(ngModel)]="cantidades[p.productoId]" min="1" style="width:70px"></td>
+        <td><button class="add" (click)="agregar(p)">+</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="carrito.length" class="carrito">
+    <h3>Carrito</h3>
+    <div *ngFor="let c of carrito" class="item">
+      <span>{{ c.nombre }}</span>
+      <span>x{{ c.cantidad }}</span>
+      <button (click)="quitar(c.productoId)">✕</button>
+    </div>
+    <button class="confirmar" (click)="confirmar()">
+      {{ auth.isAdmin() ? 'Confirmar Traslado' : 'Enviar Solicitud' }}
+    </button>
+  </div>
+</div>

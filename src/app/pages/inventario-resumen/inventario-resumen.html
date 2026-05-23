@@ -1,0 +1,47 @@
+<div class="page">
+  <header>
+    <span>Hola, {{ auth.getNombre() }} ({{ auth.getRol() }})</span>
+    <nav>
+      <button (click)="ir('/traslados')">Traslados</button>
+      <button (click)="ir('/solicitudes')">Solicitudes</button>
+      <button class="logout" (click)="logout()">Salir</button>
+    </nav>
+  </header>
+
+  <h2>Inventario</h2>
+
+  <div class="filtros">
+    <select [(ngModel)]="almacenId" (change)="cargar()">
+      <option value="0">Todos los almacenes</option>
+      <option *ngFor="let a of almacenes" [value]="a.almacenId">{{ a.nombre }}</option>
+    </select>
+    <select [(ngModel)]="categoriaId" (change)="cargar()">
+      <option value="0">Todas las categorías</option>
+      <option *ngFor="let c of categorias" [value]="c.categoriaId">{{ c.nombre }}</option>
+    </select>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>SKU</th><th>Producto</th><th>Categoría</th>
+        <th>UoM</th><th>Stock Almacén</th><th>Stock Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of productos">
+        <td>{{ p.sku }}</td>
+        <td>{{ p.nombre }}</td>
+        <td>{{ p.categoria }}</td>
+        <td>{{ p.uom }}</td>
+        <td [class.bajo]="(p.stockAlmacen ?? p.stockTotal) <= 10">
+          {{ p.stockAlmacen ?? '—' }}
+        </td>
+        <td>{{ p.stockTotal }}</td>
+      </tr>
+      <tr *ngIf="productos.length === 0">
+        <td colspan="6" style="text-align:center;color:#888">Sin resultados</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
